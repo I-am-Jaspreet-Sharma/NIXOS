@@ -42,8 +42,12 @@
     LC_TIME = "en_IN";
   };
 
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
+
+  services.xserver.windowManager.i3.enable = true;
+
 
   # Enable the XFCE Desktop Environment.
   services.xserver.displayManager.lightdm.enable = true;
@@ -96,9 +100,16 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
-  ];
+    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+i3status
+  dmenu     # or rofi
+  feh       # wallpaper setter
+  picom     # compositor for transparency and vsync
+  lxappearance  # theme selector (optional)
+  pavucontrol   # sound control GUI
+  
+];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
