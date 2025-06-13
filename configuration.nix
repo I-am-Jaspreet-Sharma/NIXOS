@@ -100,15 +100,18 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
-i3status
-  dmenu     # or rofi
-  feh       # wallpaper setter
-  picom     # compositor for transparency and vsync
-  lxappearance  # theme selector (optional)
-  pavucontrol   # sound control GUI
   
+i3status         # for status bar
+  dmenu            # lightweight app launcher
+  feh              # wallpaper setter
+  picom            # compositor (transparency, shadows)
+  pavucontrol      # audio control
+  dunst            # notifications
+  i3lock           # screen locker
+  lxappearance     # theme/appearance control (optional)
+  rofi             # better app launcher (alternative to dmenu)
+  neovim git curl wget
+
 ];
 
   # Some programs need SUID wrappers, can be configured further or are
