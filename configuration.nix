@@ -42,16 +42,12 @@
     LC_TIME = "en_IN";
   };
 
-
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  services.xserver.windowManager.i3.enable = true;
-
-
   # Enable the XFCE Desktop Environment.
   services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.xfce.enable = false;
+  services.xserver.desktopManager.xfce.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -100,19 +96,9 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  
-i3status         # for status bar
-  dmenu            # lightweight app launcher
-  feh              # wallpaper setter
-  picom            # compositor (transparency, shadows)
-  pavucontrol      # audio control
-  dunst            # notifications
-  i3lock           # screen locker
-  lxappearance     # theme/appearance control (optional)
-  rofi             # better app launcher (alternative to dmenu)
-  neovim git curl wget
-
-];
+  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  #  wget
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
