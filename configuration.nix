@@ -1,146 +1,130 @@
-{ config, pkgs, lib, ... }:
+# Edit this configuration file to define what should be installed on
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
+
+{ config, pkgs, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  imports =
+    [ # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+    ];
 
-  # Enable Nix command and flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  # Bootloader settings
+  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Host and networking
-  networking.hostName = "nixos";
+  networking.hostName = "nixos"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable networking
   networking.networkmanager.enable = true;
 
-  # Localization
+  # Set your time zone.
   time.timeZone = "Asia/Kolkata";
-  i18n.defaultLocale = "en_US.UTF-8";
 
-  console = {
-    font = "ter-v16b";
-    keyMap = "us";
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_IN";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_IN";
+    LC_IDENTIFICATION = "en_IN";
+    LC_MEASUREMENT = "en_IN";
+    LC_MONETARY = "en_IN";
+    LC_NAME = "en_IN";
+    LC_NUMERIC = "en_IN";
+    LC_PAPER = "en_IN";
+    LC_TELEPHONE = "en_IN";
+    LC_TIME = "en_IN";
   };
 
-  # User setup
-  users.users.jaspreet = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" ];
-    packages = with pkgs; [
-      firefox
-      kitty
-      neovim
-    ];
+  # Enable the X11 windowing system.
+  services.xserver.enable = true;
+
+  # Enable the XFCE Desktop Environment.
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.desktopManager.xfce.enable = true;
+
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
   };
 
-  # Fonts (nerd-fonts)
-  fonts.fontDir.enable = true;
-   fonts.packages = with pkgs; [
-    nerd-fonts._0xproto
-    nerd-fonts._3270
-    nerd-fonts.adwaita-mono
-    nerd-fonts.agave
-    nerd-fonts.anonymice
-    nerd-fonts.arimo
-    nerd-fonts.atkynson-mono
-    nerd-fonts.aurulent-sans-mono
-    nerd-fonts.bigblue-terminal
-    nerd-fonts.bitstream-vera-sans-mono
-    nerd-fonts.blex-mono
-    nerd-fonts.caskaydia-cove
-    nerd-fonts.caskaydia-mono
-    nerd-fonts.code-new-roman
-    nerd-fonts.comic-shanns-mono
-    nerd-fonts.commit-mono
-    nerd-fonts.cousine
-    nerd-fonts.d2coding
-    nerd-fonts.daddy-time-mono
-    nerd-fonts.dejavu-sans-mono
-    nerd-fonts.departure-mono
-    nerd-fonts.droid-sans-mono
-    nerd-fonts.envy-code-r
-    nerd-fonts.fantasque-sans-mono
-    nerd-fonts.fira-code
-    nerd-fonts.fira-mono
-    nerd-fonts.geist-mono
-    nerd-fonts.go-mono
-    nerd-fonts.gohufont
-    nerd-fonts.hack
-    nerd-fonts.hasklug
-    nerd-fonts.heavy-data
-    nerd-fonts.hurmit
-    nerd-fonts.im-writing
-    nerd-fonts.inconsolata
-    nerd-fonts.inconsolata-go
-    nerd-fonts.inconsolata-lgc
-    nerd-fonts.intone-mono
-    nerd-fonts.iosevka
-    nerd-fonts.iosevka-term
-    nerd-fonts.iosevka-term-slab
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.lekton
-    nerd-fonts.liberation
-    nerd-fonts.lilex
-    nerd-fonts."m+"
-    nerd-fonts.martian-mono
-    nerd-fonts.meslo-lg
-    nerd-fonts.monaspace
-    nerd-fonts.monofur
-    nerd-fonts.monoid
-    nerd-fonts.mononoki
-    nerd-fonts.noto
-    nerd-fonts.open-dyslexic
-    nerd-fonts.overpass
-    nerd-fonts.profont
-    nerd-fonts.proggy-clean-tt
-    nerd-fonts.recursive-mono
-    nerd-fonts.roboto-mono
-    nerd-fonts.sauce-code-pro
-    nerd-fonts.shure-tech-mono
-    nerd-fonts.space-mono
-    nerd-fonts.symbols-only
-    nerd-fonts.terminess-ttf
-    nerd-fonts.tinos
-    nerd-fonts.ubuntu
-    nerd-fonts.ubuntu-mono
-    nerd-fonts.ubuntu-sans
-    nerd-fonts.victor-mono
-    nerd-fonts.zed-mono
-  ];
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
 
-
-  # Wayland and Wayland-native environment
-  programs.sway.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    git wget curl vim htop unzip kbd
-    wayland xwayland wl-clipboard
-    grim slurp swaybg swaylock waybar wofi mako
-    home-manager
-  ];
-
-  # Enable dbus (needed for many Wayland apps)
-  services.dbus.enable = true;
-
-  # PipeWire (no pulseaudio)
-  hardware.pulseaudio.enable = false;
+  # Enable sound with pipewire.
+  services.pulseaudio.enable = false;
+  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
-    alsa.support32Bit = false;
+    alsa.support32Bit = true;
     pulse.enable = true;
-    jack.enable = false;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
   };
 
-  # Home Manager (if not using flakes, remove if using flake setup)
-  # imports = [ <home-manager/nixos> ]; # Uncomment if using non-flake home-manager
-  # home-manager.users.jaspreet = {
-  #   home.stateVersion = "25.05";
+  # Enable touchpad support (enabled default in most desktopManager).
+  # services.xserver.libinput.enable = true;
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.jaspreet = {
+    isNormalUser = true;
+    description = "Jaspreet Sharma";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [
+    #  thunderbird
+    ];
+  };
+
+  # Install firefox.
+  programs.firefox.enable = true;
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  #  wget
+  ];
+
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
   # };
 
-  system.stateVersion = "25.05";
-}
+  # List services that you want to enable:
 
+  # Enable the OpenSSH daemon.
+  # services.openssh.enable = true;
+
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # Or disable the firewall altogether.
+  # networking.firewall.enable = false;
+
+  # This value determines the NixOS release from which the default
+  # settings for stateful data, like file locations and database versions
+  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # this value at the release version of the first install of this system.
+  # Before changing this value read the documentation for this option
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  system.stateVersion = "25.05"; # Did you read the comment?
+
+}
